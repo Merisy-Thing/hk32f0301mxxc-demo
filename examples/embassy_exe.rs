@@ -10,6 +10,7 @@ use panic_halt as _;
 use core::cell::Cell;
 use core::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use hal::serial::Serial;
+use serial_log::println;
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -113,7 +114,6 @@ async fn main(spawner: Spawner) -> ! {
     if let Some(mut p) = hal::pac::Peripherals::take() {
         let mut rcc = p.RCC.configure().hsi().freeze(&mut p.FLASH);
         let gpiod = p.GPIOD.split(&mut rcc);
-        let gpioc = p.GPIOC.split(&mut rcc);
 
         let cp = Peripherals::take().unwrap();
 
@@ -124,13 +124,10 @@ async fn main(spawner: Spawner) -> ! {
         systick_init(&mut syst, &mut rcc);
 
         spawner.spawn(test()).ok();
-        let mut led1 = cortex_m::interrupt::free(|cs| gpioc.pc3.into_push_pull_output(cs));
-        let mut led5 = cortex_m::interrupt::free(|cs| gpioc.pc7.into_push_pull_output(cs));
 
-        led5.set_high().unwrap();
-
+        println!("Hello world!");
         loop {
-            led1.toggle().unwrap();
+            println!("main...");
             Timer::after(Duration::from_millis(500)).await;
         }
     }
@@ -142,7 +139,10 @@ async fn main(spawner: Spawner) -> ! {
 
 #[embassy_executor::task]
 async fn test() {
+    let mut i=0;
     loop {
+        println!("test... {}", i);
+        i+=1;
         Timer::after(Duration::from_millis(1000)).await;
     }
 }

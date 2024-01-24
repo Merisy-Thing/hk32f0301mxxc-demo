@@ -15,6 +15,9 @@ defmt = "0.3.5"
 serial-log = { version = "0.1.0", path = "../serial-log", features = ["defmt-log", "device-hk32f0301mxxc-uart1"] }
 
 hal = { package = "hk32f0301mxxc-hal", version = "0.1.0", path = "../hk32f0301mxxc-hal"}
+embassy-executor = { version="0.5.0", features=["arch-cortex-m", "executor-thread", "integrated-timers", "task-arena-size-128"] }
+embassy-time = { version="0.3.0", features=["tick-hz-1_000"] }
+embassy-time-driver = "0.1.0"
 
 
 [profile.release]
